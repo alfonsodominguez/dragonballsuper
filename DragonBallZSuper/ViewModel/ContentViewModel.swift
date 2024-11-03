@@ -7,10 +7,11 @@
 
 import Foundation
 
-class HomeViewModel {
+class ContentViewModel {
     
-//    func getAll() async -> ItemsCharacter {
-//        
-//        return try! await apiService.getAllCharacters()
-//    }
+    func getAllCharacter() async -> ItemsCharacter {
+        let apiService = ApiServices()
+        
+        return try! await apiService.getAllCharacters()
+    }
 }

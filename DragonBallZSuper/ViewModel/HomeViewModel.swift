@@ -6,3 +6,12 @@
 //
 
 import Foundation
+
+class HomeViewModel {
+    
+    func getCharacter(id: Int) async -> Character {
+        let apiService = ApiServices()
+        
+        return try! await apiService.getCharacter(id: id)
+    }
+}

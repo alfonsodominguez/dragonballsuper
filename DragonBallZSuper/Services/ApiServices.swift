@@ -7,9 +7,30 @@
 
 import Foundation
 
-class CharacterServices {
+class ApiServices {
+    let characterUrl: String = "https://dragonball-api.com/api/characters/"
     
-    func getAllCharacters() -> [Character] {
+    func getCharacter(id: Int) async throws -> Character{
+        let urlString = characterUrl + String(id)
+        let url = URL(string:urlString)!
+        let (data, response) = try await URLSession.shared.data(from: url)
         
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            fatalError("Bad response")
+        }
+        
+        return try JSONDecoder().decode(Character.self, from: data)
+    }
+    
+    func getAllCharacters(limit: Int = 100) async throws -> ItemsCharacter{
+        let urlString = characterUrl + "?limit=\(limit)"
+        let url = URL(string:urlString)!
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            fatalError("Bad response")
+        }
+        
+        return try JSONDecoder().decode(ItemsCharacter.self, from: data)
     }
 }

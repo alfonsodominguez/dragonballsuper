@@ -6,3 +6,7 @@
 //
 
 import Foundation
+
+class ItemsCharacter: Codable {
+    var items: [Character]
+}
