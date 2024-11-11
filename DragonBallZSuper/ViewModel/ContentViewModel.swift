@@ -9,9 +9,12 @@ import Foundation
 
 class ContentViewModel {
     
-    func getAllCharacter() async -> ItemsCharacter {
+    func getAllCharacter() async -> Resource<ItemsCharacter> {
         let apiService = ApiServices()
         
-        return try! await apiService.getAllCharacters()
+        guard let result = try? await apiService.getAllCharacters() else {
+            return Resource.error(data: nil, error: ApiServicesError.serverError)
+        }
+        return Resource.success(data: result)
     }
 }

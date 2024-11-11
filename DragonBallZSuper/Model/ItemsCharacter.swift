@@ -9,4 +9,10 @@ import Foundation
 
 class ItemsCharacter: Codable {
     var items: [Character]
+    
+    init(items: [Character]) {
+        self.items = items
+    }
+    
+    static let sample = ItemsCharacter(items: Character.sampleData)
 }

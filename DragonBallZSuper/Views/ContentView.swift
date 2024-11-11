@@ -9,21 +9,21 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isActive = false
-    @State var itemCharacter: ItemsCharacter?
+    @State var resource: Resource<ItemsCharacter>?
     
     var body: some View {
         VStack{
-            if let itemCharacter = itemCharacter{
-                HomeView(itemCharacter: itemCharacter)
+            if let resource = resource{
+                HomeView(itemCharacter: resource.getData())
                     .transition(.opacity)
             } else {
                 PrincipalLoadingView().onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                         isActive.toggle()
                         Task {
-                            let itemsCharacter = await ContentViewModel().getAllCharacter()
+                            let resourceItemsCharacter = await ContentViewModel().getAllCharacter()
                             withAnimation {
-                                itemCharacter = itemsCharacter
+                                resource = resourceItemsCharacter
                             }
                         }
                     }
