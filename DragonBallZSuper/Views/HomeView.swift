@@ -11,7 +11,9 @@ struct HomeView: View {
     @State var itemCharacter: ItemsCharacter?
     @State var currentCharacter: Int = 0
     @State private var showActionSheet = false
+    @State private var seeMore = false
     @State var searchFilter: String = ""
+    @State var seeMoreText: String = "Ver más"
     
     var body: some View {
         ZStack{
@@ -19,6 +21,7 @@ struct HomeView: View {
             Image(.kamiHouse)
                 .resizable()
                 .opacity(0.3).background(.black)
+            
             VStack{
                 ZStack{
                     HStack {
@@ -47,52 +50,104 @@ struct HomeView: View {
                             .background(.white)
                     }
                 }
+            
                 VStack{
                     ImageView(characterImage: character.image, totalItems: itemCharacter!.items.count, currentCharacter: $currentCharacter)
-                    VStack{
-                        HStack {
-                            VStack{
-                                Text(character.race)
-                                    .font(Font.custom("Aldrich",size: 30))
-                                    .textCase(.uppercase)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primaryYellow)
-                                    .padding(.top, 10)
-                                    .padding(.horizontal)
-                                    .frame(maxWidth: .infinity, alignment: .topLeading)  .lineLimit(1)
-                                
-                                    .minimumScaleFactor(0.5)
-                                Text(character.name)
-                                    .font(Font.custom("Aldrich",size: 40))
-                                    .textCase(.uppercase)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal)
-                                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                                    .lineLimit(1)
-                                    .minimumScaleFactor(0.5)
+                    ScrollView {
+                        VStack{
+                            HStack {
+                                VStack{
+                                    Text(character.race)
+                                        .font(Font.custom("Aldrich",size: 30))
+                                        .textCase(.uppercase)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.primaryYellow)
+                                        .padding(.top, 10)
+                                        .padding(.horizontal)
+                                        .frame(maxWidth: .infinity, alignment: .topLeading)  .lineLimit(1)
+                                    
+                                        .minimumScaleFactor(0.5)
+                                    Text(character.name)
+                                        .font(Font.custom("Aldrich",size: 40))
+                                        .textCase(.uppercase)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal)
+                                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                                        .lineLimit(1)
+                                        .minimumScaleFactor(0.5)
+                                }
                             }
+                            Text(character.description)
+                                .font(Font.custom("Aldrich",size: 15))
+                                .foregroundColor(.white)
+                                    .frame(maxHeight: seeMore ? 400 : 100, alignment: .topLeading)
+                                .padding(.horizontal)
+                            
+                            if seeMore {
+                                HStack{
+                                    VStack{
+                                        Text("Ki base:")
+                                            .font(Font.custom("Aldrich",size: 20))
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                            .padding(.horizontal)
+                                        Text(character.ki)
+                                            .font(Font.custom("Aldrich",size: 15))
+                                            .foregroundColor(.primaryYellow)
+                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                            .padding(.horizontal)
+                                    }
+                                    VStack{
+                                        Text("Max Ki:")
+                                            .font(Font.custom("Aldrich",size: 20))
+                                            .bold()
+                                            .foregroundColor(.white)
+                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                            .padding(.horizontal)
+                                        Text(character.maxKi)
+                                            .font(Font.custom("Aldrich",size: 15))
+                                            .foregroundColor(.primaryYellow)
+                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                            .padding(.horizontal)
+                                    }
+                                }
+                                Text("Afiliación:")
+                                    .font(Font.custom("Aldrich",size: 20))
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                    .padding(.horizontal)
+                                Text(character.affiliation)
+                                    .font(Font.custom("Aldrich",size: 15))
+                                    .foregroundColor(.primaryYellow)
+                                    .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                                    .padding(.horizontal)
+                                    .padding(.bottom)
+                            }
+                            
+                            Button(action: {
+                                seeMore.toggle()
+                                seeMoreText = "Ver más"
+                                if seeMore {
+                                    seeMoreText = "Ver menos"
+                                }
+                                
+                            }, label: {
+                                Text(seeMoreText)
+                                    .font(.title3)
+                                    .padding(.vertical, 10)
+                                    .padding(.horizontal, 15)
+                                    .foregroundColor(.black)
+                                    .background(.primaryOrange)
+                                    .cornerRadius(4)
+                            })
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .padding(.horizontal, 20)
                         }
-                        Text(character.description)
-                            .font(Font.custom("Aldrich",size: 15))
-                            .foregroundColor(.white)
-                            .frame(maxHeight: 100, alignment: .topLeading)
-                            .padding(.horizontal)
-                        
-                        Button(action: {
-                        }, label: {
-                            Text("Ver mas")
-                                .font(.title3)
-                                .padding(.vertical, 10)
-                                .padding(.horizontal, 15)
-                                .foregroundColor(.black)
-                                .background(.primaryOrange)
-                                .cornerRadius(4)
-                        })
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.horizontal, 20)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    }.padding()
                 }
                 
                 Spacer()
