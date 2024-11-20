@@ -9,6 +9,7 @@ import Foundation
 
 class ApiServices {
     let characterUrl: String = "https://dragonball-api.com/api/characters"
+    let planetUrl: String = "https://dragonball-api.com/api/planets"
     
     func getCharacter(id: Int) async throws -> Character {
         let urlString = characterUrl + String(id)
@@ -45,4 +46,17 @@ class ApiServices {
         return try JSONDecoder().decode([Character].self, from: data)
         
     }
+    
+    func getAllPlanets(limit: Int = 100) async throws -> ItemsPlanet {
+        let urlString = planetUrl + "?limit=\(limit)"
+        let url = URL(string:urlString)!
+        let (data, response) = try await URLSession.shared.data(from: url)
+    
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            fatalError("Bad response")
+        }
+        return try JSONDecoder().decode(ItemsPlanet.self, from: data)
+    }
+    
+    
 }

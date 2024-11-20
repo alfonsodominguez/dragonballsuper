@@ -23,37 +23,15 @@ struct HomeView: View {
                 .opacity(0.3).background(.black)
             
             VStack{
-                ZStack{
-                    HStack {
-                        Image(.icon)
-                            .resizable()
-                            .frame(width: 200, height: 100, alignment: .center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    HStack{
-                        Button(action:{
-                            showActionSheet = true
-                        }, label: {
-                            Image(systemName: "magnifyingglass.circle.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(.primaryOrange)
-                                .frame(height: 35)
-                        })
-                        
-                        
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .topTrailing)
-                    .sheet(isPresented: $showActionSheet) {
+                ScrollView {
+                    ToolbarView(showActionSheet: $showActionSheet)
+                        .sheet(isPresented: $showActionSheet) {
                         SearchView(searchFilter: searchFilter)
                             .background(.white)
                     }
-                }
-            
-                VStack{
-                    ImageView(characterImage: character.image, totalItems: itemCharacter!.items.count, currentCharacter: $currentCharacter)
-                    ScrollView {
+                    
+                    VStack{
+                        ImageView(characterImage: character.image, totalItems: itemCharacter!.items.count, currentCharacter: $currentCharacter)
                         VStack{
                             HStack {
                                 VStack{
@@ -77,11 +55,29 @@ struct HomeView: View {
                                         .lineLimit(1)
                                         .minimumScaleFactor(0.5)
                                 }
+                                Button(action: {
+                                    seeMore.toggle()
+                                    seeMoreText = "Ver más"
+                                    if seeMore {
+                                        seeMoreText = "Ver menos"
+                                    }
+                                    
+                                }, label: {
+                                    Text(seeMoreText)
+                                        .font(.title3)
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal, 15)
+                                        .foregroundColor(.black)
+                                        .background(.primaryOrange)
+                                        .cornerRadius(4)
+                                })
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                                .padding(.horizontal, 20)
                             }
                             Text(character.description)
                                 .font(Font.custom("Aldrich",size: 15))
                                 .foregroundColor(.white)
-                                    .frame(maxHeight: seeMore ? 400 : 100, alignment: .topLeading)
+                                .frame(maxHeight: seeMore ? 400 : 90, alignment: .topLeading)
                                 .padding(.horizontal)
                             
                             if seeMore {
@@ -124,27 +120,10 @@ struct HomeView: View {
                                     .foregroundColor(.primaryYellow)
                                     .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
                                     .padding(.horizontal)
-                                    .padding(.bottom)
+                                    .padding(.bottom, 100)
                             }
                             
-                            Button(action: {
-                                seeMore.toggle()
-                                seeMoreText = "Ver más"
-                                if seeMore {
-                                    seeMoreText = "Ver menos"
-                                }
-                                
-                            }, label: {
-                                Text(seeMoreText)
-                                    .font(.title3)
-                                    .padding(.vertical, 10)
-                                    .padding(.horizontal, 15)
-                                    .foregroundColor(.black)
-                                    .background(.primaryOrange)
-                                    .cornerRadius(4)
-                            })
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .padding(.horizontal, 20)
+                           
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     }.padding()

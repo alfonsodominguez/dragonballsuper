@@ -11,10 +11,16 @@ struct ContentView: View {
     @State private var isActive = false
     @State var resource: Resource<ItemsCharacter>?
     
+    init() {
+        UITabBar.appearance().backgroundColor = UIColor.primaryBlack
+        UITabBar.appearance().barTintColor = UIColor.primaryBlack
+        UITabBar.appearance().unselectedItemTintColor = UIColor.white
+    }
+    
     var body: some View {
         VStack{
             if let resource = resource{
-                HomeView(itemCharacter: resource.getData())
+                PrincipalView(itemsCharacter: resource.getData())
                     .transition(.opacity)
             } else {
                 PrincipalLoadingView().onAppear {
