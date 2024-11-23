@@ -11,7 +11,7 @@ class ApiServices {
     let characterUrl: String = "https://dragonball-api.com/api/characters"
     let planetUrl: String = "https://dragonball-api.com/api/planets"
     
-    func getCharacter(id: Int) async throws -> Character {
+    func getCharacter(id: Int) async throws -> Character? {
         let urlString = characterUrl + String(id)
         let url = URL(string:urlString)!
         let (data, response) = try await URLSession.shared.data(from: url)
@@ -23,39 +23,51 @@ class ApiServices {
         return try JSONDecoder().decode(Character.self, from: data)
     }
     
-    func getAllCharacters(limit: Int = 100) async throws -> ItemsCharacter {
+    func getAllCharacters(limit: Int = 100) async throws -> ItemsCharacter? {
         let urlString = characterUrl + "?limit=\(limit)"
         let url = URL(string:urlString)!
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            fatalError("Bad response")
+            return nil
         }
         
         return try JSONDecoder().decode(ItemsCharacter.self, from: data)
     }
     
-    func getCharacterByName(name: String) async throws -> [Character]{
+    func getCharacterByName(name: String) async throws -> [Character]?{
         let urlString = characterUrl + "?name=\(name)"
         let url = URL(string:urlString)!
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            fatalError("Bad response")
+            return nil
         }
         return try JSONDecoder().decode([Character].self, from: data)
         
     }
     
-    func getAllPlanets(limit: Int = 100) async throws -> ItemsPlanet {
+    func getAllPlanets(limit: Int = 100) async throws -> ItemsPlanet? {
         let urlString = planetUrl + "?limit=\(limit)"
         let url = URL(string:urlString)!
         let (data, response) = try await URLSession.shared.data(from: url)
     
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            fatalError("Bad response")
+            return nil
         }
         return try JSONDecoder().decode(ItemsPlanet.self, from: data)
+    }
+    
+    func getTransformations() async throws -> [TransformationCharacter]? {
+        let urlString = "https://dragonball-api.com/api/transformations"
+        let url = URL(string:urlString)!
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            return nil
+        }
+        
+        return try JSONDecoder().decode([TransformationCharacter].self, from: data)
     }
     
     

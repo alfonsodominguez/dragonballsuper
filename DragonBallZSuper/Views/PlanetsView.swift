@@ -9,7 +9,7 @@ import SwiftUI
 struct PlanetsView: View {
     @State private var showActionSheet = false
     @State var itemsPlanet: ItemsPlanet? = nil
-    @State var currentCharacter: Int = 0
+    @State var currentPlanet: Int = 0
     
     var body: some View {
         ZStack {
@@ -22,10 +22,10 @@ struct PlanetsView: View {
                 ToolbarView(showActionSheet: $showActionSheet, showSearchButton: false)
                 
                 VStack {
-                    if let itemsPlanet = itemsPlanet, !itemsPlanet.items.isEmpty, currentCharacter < itemsPlanet.items.count {
-                        let planet = itemsPlanet.items[currentCharacter]
+                    if let itemsPlanet = itemsPlanet, !itemsPlanet.items.isEmpty, currentPlanet < itemsPlanet.items.count {
+                        let planet = itemsPlanet.items[currentPlanet]
                         
-                        ImageView(characterImage: planet.image, totalItems: itemsPlanet.items.count, currentCharacter: $currentCharacter)
+                        CarouselImageView(characterImage: planet.image, totalItems: itemsPlanet.items.count, currentCharacter: $currentPlanet)
                         
                         VStack {
                             Text(planet.name)
