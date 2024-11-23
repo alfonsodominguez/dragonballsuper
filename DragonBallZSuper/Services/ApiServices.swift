@@ -10,6 +10,7 @@ import Foundation
 class ApiServices {
     let characterUrl: String = "https://dragonball-api.com/api/characters"
     let planetUrl: String = "https://dragonball-api.com/api/planets"
+    let transformationUrl = "https://dragonball-api.com/api/transformations"
     
     func getCharacter(id: Int) async throws -> Character? {
         let urlString = characterUrl + String(id)
@@ -59,8 +60,7 @@ class ApiServices {
     }
     
     func getTransformations() async throws -> [TransformationCharacter]? {
-        let urlString = "https://dragonball-api.com/api/transformations"
-        let url = URL(string:urlString)!
+        let url = URL(string:transformationUrl)!
         let (data, response) = try await URLSession.shared.data(from: url)
         
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {

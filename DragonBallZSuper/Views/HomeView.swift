@@ -14,10 +14,11 @@ struct HomeView: View {
     @State private var seeMore = false
     @State var searchFilter: String = ""
     @State var seeMoreText: String = "Ver más"
+    @State var findCharacter: Character? = nil
     
     var body: some View {
         ZStack{
-            let character: Character = itemCharacter!.items[currentCharacter]
+            let character: Character = findCharacter ?? itemCharacter!.items[currentCharacter]
             Image(.kamiHouse)
                 .resizable()
                 .opacity(0.3).background(.black)
@@ -25,106 +26,19 @@ struct HomeView: View {
             VStack{
                 ToolbarView(showActionSheet: $showActionSheet, showSearchButton: true)
                     .sheet(isPresented: $showActionSheet) {
-                    SearchView(searchFilter: searchFilter)
-                        .background(.white)
-                }
+                        SearchView(searchFilter: searchFilter, showActionSheet: $showActionSheet, findCharacter: $findCharacter)
+                            .background(.white)
+                    }
                 
                 ScrollView {
-                 
                     VStack{
                         CarouselImageView(characterImage: character.image, totalItems: itemCharacter!.items.count, currentCharacter: $currentCharacter)
+                            .onChange(of: currentCharacter){
+                                findCharacter = nil
+                            }
+                        
                         VStack{
-                            HStack {
-                                VStack{
-                                    Text(character.race)
-                                        .font(Font.custom("Aldrich",size: 30))
-                                        .textCase(.uppercase)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.primaryYellow)
-                                        .padding(.top, 10)
-                                        .padding(.horizontal)
-                                        .frame(maxWidth: .infinity, alignment: .topLeading)  .lineLimit(1)
-                                    
-                                        .minimumScaleFactor(0.5)
-                                    Text(character.name)
-                                        .font(Font.custom("Aldrich",size: 40))
-                                        .textCase(.uppercase)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal)
-                                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                }
-                                Button(action: {
-                                    seeMore.toggle()
-                                    seeMoreText = "Ver más"
-                                    if seeMore {
-                                        seeMoreText = "Ver menos"
-                                    }
-                                    
-                                }, label: {
-                                    Text(seeMoreText)
-                                        .font(.title3)
-                                        .padding(.vertical, 10)
-                                        .padding(.horizontal, 15)
-                                        .foregroundColor(.black)
-                                        .background(.primaryOrange)
-                                        .cornerRadius(4)
-                                })
-                                .frame(maxWidth: .infinity, alignment: .trailing)
-                                .padding(.horizontal, 20)
-                            }
-                            Text(character.description)
-                                .font(Font.custom("Aldrich",size: 15))
-                                .foregroundColor(.white)
-                                .frame(maxHeight: seeMore ? 400 : 90, alignment: .topLeading)
-                                .padding(.horizontal)
-                            
-                            if seeMore {
-                                HStack{
-                                    VStack{
-                                        Text("Ki base:")
-                                            .font(Font.custom("Aldrich",size: 20))
-                                            .bold()
-                                            .foregroundColor(.white)
-                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                            .padding(.horizontal)
-                                        Text(character.ki)
-                                            .font(Font.custom("Aldrich",size: 15))
-                                            .foregroundColor(.primaryYellow)
-                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                            .padding(.horizontal)
-                                    }
-                                    VStack{
-                                        Text("Max Ki:")
-                                            .font(Font.custom("Aldrich",size: 20))
-                                            .bold()
-                                            .foregroundColor(.white)
-                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                            .padding(.horizontal)
-                                        Text(character.maxKi)
-                                            .font(Font.custom("Aldrich",size: 15))
-                                            .foregroundColor(.primaryYellow)
-                                            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                            .padding(.horizontal)
-                                    }
-                                }
-                                Text("Afiliación:")
-                                    .font(Font.custom("Aldrich",size: 20))
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                    .padding(.horizontal)
-                                Text(character.affiliation)
-                                    .font(Font.custom("Aldrich",size: 15))
-                                    .foregroundColor(.primaryYellow)
-                                    .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-                                    .padding(.horizontal)
-                                    .padding(.bottom, 100)
-                            }
-                            
-                           
+                            CharacterDataView(seeMore: $seeMore, seeMoreText: $seeMoreText, character: character)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                     }.padding()
@@ -144,12 +58,112 @@ struct HomeView: View {
     }
 }
 
+struct CharacterDataView: View {
+    @Binding var seeMore: Bool
+    @Binding var seeMoreText: String
+    var character: Character
+    var body: some View {
+        HStack {
+            VStack{
+                Text(character.race)
+                    .font(Font.custom("Aldrich",size: 30))
+                    .textCase(.uppercase)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primaryYellow)
+                    .padding(.top, 10)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)  .lineLimit(1)
+                
+                    .minimumScaleFactor(0.5)
+                Text(character.name)
+                    .font(Font.custom("Aldrich",size: 40))
+                    .textCase(.uppercase)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+            }
+            Button(action: {
+                seeMore.toggle()
+                seeMoreText = "Ver más"
+                if seeMore {
+                    seeMoreText = "Ver menos"
+                }
+                
+            }, label: {
+                Text(seeMoreText)
+                    .font(.title3)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 15)
+                    .foregroundColor(.black)
+                    .background(.primaryOrange)
+                    .cornerRadius(4)
+            })
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.horizontal, 20)
+        }
+        Text(character.description)
+            .font(Font.custom("Aldrich",size: 15))
+            .foregroundColor(.white)
+            .frame(maxWidth: .infinity, maxHeight: seeMore ? 400 : 90, alignment: .topLeading)
+            .padding(.horizontal)
+        
+        if seeMore {
+            HStack{
+                VStack{
+                    Text("Ki base:")
+                        .font(Font.custom("Aldrich",size: 20))
+                        .bold()
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                        .padding(.horizontal)
+                    Text(character.ki)
+                        .font(Font.custom("Aldrich",size: 15))
+                        .foregroundColor(.primaryYellow)
+                        .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                        .padding(.horizontal)
+                }
+                VStack{
+                    Text("Max Ki:")
+                        .font(Font.custom("Aldrich",size: 20))
+                        .bold()
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                        .padding(.horizontal)
+                    Text(character.maxKi)
+                        .font(Font.custom("Aldrich",size: 15))
+                        .foregroundColor(.primaryYellow)
+                        .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                        .padding(.horizontal)
+                }
+            }
+            Text("Afiliación:")
+                .font(Font.custom("Aldrich",size: 20))
+                .bold()
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                .padding(.horizontal)
+            Text(character.affiliation)
+                .font(Font.custom("Aldrich",size: 15))
+                .foregroundColor(.primaryYellow)
+                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                .padding(.horizontal)
+                .padding(.bottom, 100)
+        }
+        
+        
+    }
+}
+
 
 struct SearchView: View {
-    var characterImage: String = "https://dragonball-api.com/characters/goku_normal.webp"
     @State var searchFilter: String
+    @Binding var showActionSheet: Bool
     @State private var groupCharacters: [[Character]] = [[]]
     @State private var errorSearch: String?
+    @Binding var findCharacter: Character?
     var indexChar: Int = 0
     
     var body: some View {
@@ -183,7 +197,10 @@ struct SearchView: View {
                         ForEach(groupCharacters.indices, id: \.self) { index in
                             HStack{
                                 ForEach(groupCharacters[index], id: \.self) { character in
-                                    Button(action:{}, label: {
+                                    Button(action:{
+                                        findCharacter = character
+                                        showActionSheet = false
+                                    }, label: {
                                         VStack{
                                             HStack{
                                                 ZStack{
@@ -242,6 +259,5 @@ struct SearchView: View {
     
 }
 #Preview {
-    //    HomeView(itemCharacter: ItemsCharacter.sample)
     ContentView()
 }
