@@ -23,13 +23,14 @@ struct HomeView: View {
                 .opacity(0.3).background(.black)
             
             VStack{
+                ToolbarView(showActionSheet: $showActionSheet, showSearchButton: true)
+                    .sheet(isPresented: $showActionSheet) {
+                    SearchView(searchFilter: searchFilter)
+                        .background(.white)
+                }
+                
                 ScrollView {
-                    ToolbarView(showActionSheet: $showActionSheet)
-                        .sheet(isPresented: $showActionSheet) {
-                        SearchView(searchFilter: searchFilter)
-                            .background(.white)
-                    }
-                    
+                 
                     VStack{
                         ImageView(characterImage: character.image, totalItems: itemCharacter!.items.count, currentCharacter: $currentCharacter)
                         VStack{

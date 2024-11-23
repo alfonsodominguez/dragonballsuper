@@ -13,7 +13,7 @@ struct PlanetsView: View {
     
     var body: some View {
         ZStack {
-            Image("planetBackgroud") // Asegúrate de usar el nombre de la imagen como string
+            Image(.planetBackgroud) 
                 .resizable()
                 .opacity(0.5)
                 .background(.black)
