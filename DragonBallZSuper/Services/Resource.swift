@@ -31,4 +31,6 @@ struct Resource <T> {
     public static func error(data: T?, error: ApiServicesError) -> Resource<T> {
         return self.init(data: data, error: error, status: .error)
     }
+    
+
 }
